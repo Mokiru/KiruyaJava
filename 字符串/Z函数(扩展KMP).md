@@ -182,4 +182,42 @@ public static void main(String[] args) {
 
 - [CF126B Password](https://codeforces.com/problemset/problem/126/B)
 
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String s = scanner.nextLine();
+        int n = s.length();
+        int[] z = new int[n];
+        for (int i = 1, l = 0, r = 0; i < n; i++) {
+            if (i <= r && z[i - l] < r - i + 1) {
+                z[i] = z[i - l];
+            } else {
+                z[i] = Math.max(0, r - i + 1);
+                while (i + z[i] < n && s.charAt(z[i]) == s.charAt(i + z[i])) z[i]++;
+            }
+            if (i + z[i] - 1 > r) {
+                l = i;
+                r = i + z[i] - 1;
+            }
+        }
+        scanner.close();
+        int res = 0, nw = 0;
+        for (int i = 1; i < n; i++) {
+            if (i + z[i] == n && nw >= z[i]) {
+                res = Math.max(res, z[i]);
+            }    
+            nw = Math.max(nw, z[i]);
+        }
+        if (res == 0) {
+            System.out.println("Just a legend");
+        } else {
+            System.out.println(s.substring(0, res));
+        }
+    }
+}
+```
+
 - [Leetcode 2223 - Sum of Scores of Built Strings](https://leetcode.cn/problems/sum-of-scores-of-built-strings/)
