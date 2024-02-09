@@ -219,9 +219,71 @@ public class Main {
     }
 }
 ```
-- [Codechef - Chef and Strings](https://www.codechef.com/problems/CHSTR)
 
+- [Codeforces - Prefixes and Suffixes](https://codeforces.com/problemset/problem/432/D)
+> 该题首先得到`z[i]`数组，`n`为字符串长度，题目需要得到长度`l`的后缀有与之相同的前缀，并且要获得该子串出现的次数`c`，首先我们知道`i+z[i]==n`可以说明`i`处的后缀与前缀相同，从`0-n`遍历很容易知道有哪些`i`，但是我们如何知道该出现次数呢。例如`ABACABA`，我们观察得知`z[i]={7,0,1,0,3,0,1}`（为了方便，让`z[0]=n`），由于我们需要获得出现次数的子串一定是前缀字符串，所以我们在该字符串找`A`则只需统计所有`z[i]>=1`有多少即可(因为`z[i]=1`表示`s[i]=s[0]`，那么设`i,j`两处，`z[i]>=1,z[j]>=1`，可以得到`s[i, i + z[i]]=s[0,z[i]],s[j, i + z[i]]=s[0,z[i]]`，显然这两个位置的字符串也是相等的)。
 
+```java
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String s = scanner.nextLine();
+        int n = s.length();
+        int[] z = new int[n];
+        z[0] = n;
+        for (int i = 1, l = 0, r = 0; i < n; i++) {
+            if (i <= r && z[i - l] < r - i + 1) {
+                z[i] = z[i - l];
+            } else {
+                z[i] = Math.max(0, r - i + 1);
+                while (i + z[i] < n && s.charAt(z[i]) == s.charAt(i + z[i])) z[i]++;
+            }
+            if (i + z[i] - 1 > r) {
+                l = i;
+                r = i + z[i] - 1;
+            }
+        }
+
+        HashSet<Integer> set = new HashSet<>();
+        HashMap<Integer, Integer> map2 = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            if (z[i] == 0) continue;
+            if (i + z[i] == n) {
+                set.add(z[i]);
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (z[i] == 0) continue;
+            if (map2.getOrDefault(z[i], -1) == -1) {
+                map2.put(z[i], 1);
+            } else {
+                map2.replace(z[i], map2.get(z[i]) + 1);
+            }
+        }
+        int sum = 0;
+        List<Integer> list = new ArrayList<>(map2.keySet());
+        Collections.sort(list, Collections.reverseOrder());
+        for (Integer x : list) {
+            sum += map2.get(x);
+            map2.replace(x, sum);
+        }
+
+        Collections.reverse(list);
+        System.out.println(set.size());
+        for (Integer x : list) {
+            if (set.contains(x)) {
+                System.out.println(x+" "+map2.get(x));
+            }
+        }
+
+        scanner.close();
+    }
+}
+
+```
 - [Leetcode 2223 - Sum of Scores of Built Strings](https://leetcode.cn/problems/sum-of-scores-of-built-strings/)
 
 ```java
