@@ -219,5 +219,40 @@ public class Main {
     }
 }
 ```
+- [Codechef - Chef and Strings](https://www.codechef.com/problems/CHSTR)
+
 
 - [Leetcode 2223 - Sum of Scores of Built Strings](https://leetcode.cn/problems/sum-of-scores-of-built-strings/)
+
+```java
+class Solution {
+    public int[] zFunction(String s) {
+        int n = s.length();
+        int[] z = new int[n];
+        for (int i = 1, l = 0, r = 0; i < n; i++) {
+            if (i <= r && z[i - l] < r - i + 1) {
+                z[i] = z[i - l];
+            } else {
+                z[i] = Math.max(0, r - i + 1);
+                while (i + z[i] < n && s.charAt(z[i]) == s.charAt(i + z[i])) {
+                    z[i]++;
+                }
+            }
+            if (i + z[i] - 1 > r) {
+                l = i;
+                r = i + z[i] - 1;
+            }
+        }
+        return z;
+    }
+    public long sumScores(String s) {
+        int n = s.length();
+        int[] z = zFunction(s);
+        Long sum = 0L;
+        for (int i = 0; i < n; i++) {
+            sum += (long) z[i];
+        }
+        return sum + n;
+    }
+}
+```
